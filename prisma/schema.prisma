@@ -14,16 +14,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Attendee {
+  id         Int     @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String
+  documentId String
+  phone      String?
 
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String
+  tickets Ticket[]
 
-  @@index([name])
+  @@index([email])
+  @@index([documentId])
+}
+
+model TicketType {
+  id              Int    @id @default(autoincrement())
+  name            String
+  price           Int
+  ticketsIncluded Int    @default(1)
+
+  tickets Ticket[]
+}
+
+model Ticket {
+  id             Int    @id @default(autoincrement())
+  attendeeId     Int
+  ticketTypeId   Int
+  redemptionCode String
+
+  attendee   Attendee   @relation(fields: [attendeeId], references: [id])
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+}
+
+model MoneyAccount {
+  id          Int    @id @default(autoincrement())
+  accountType String
+  userId      String @unique
+
+  user             User               @relation(fields: [userId], references: [id])
+  fromTransactions MoneyTransaction[] @relation("fromTransactions")
+  toTransactions   MoneyTransaction[] @relation("toTransactions")
+}
+
+model MoneyTransaction {
+  id            Int @id @default(autoincrement())
+  amount        Int
+  fromAccountId Int
+  toAccountId   Int
+
+  fromAccount MoneyAccount @relation("fromTransactions", fields: [fromAccountId], references: [id])
+  toAccount   MoneyAccount @relation("toTransactions", fields: [toAccountId], references: [id])
 }
 
 // Necessary for Next auth
@@ -63,7 +104,8 @@ model User {
   role          String?   @default("user")
   accounts      Account[]
   sessions      Session[]
-  posts         Post[]
+
+  moneyAccount MoneyAccount?
 }
 
 model VerificationToken {
