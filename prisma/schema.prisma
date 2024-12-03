@@ -24,6 +24,9 @@ model Attendee {
 
   tickets Ticket[]
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([email])
   @@index([documentId])
 }
@@ -35,6 +38,9 @@ model TicketType {
   ticketsIncluded Int    @default(1)
 
   tickets Ticket[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Ticket {
@@ -45,6 +51,9 @@ model Ticket {
 
   attendee   Attendee   @relation(fields: [attendeeId], references: [id])
   ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model MoneyAccount {
@@ -55,6 +64,9 @@ model MoneyAccount {
   user             User               @relation(fields: [userId], references: [id])
   fromTransactions MoneyTransaction[] @relation("fromTransactions")
   toTransactions   MoneyTransaction[] @relation("toTransactions")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model MoneyTransaction {
@@ -65,6 +77,9 @@ model MoneyTransaction {
 
   fromAccount MoneyAccount @relation("fromTransactions", fields: [fromAccountId], references: [id])
   toAccount   MoneyAccount @relation("toTransactions", fields: [toAccountId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
