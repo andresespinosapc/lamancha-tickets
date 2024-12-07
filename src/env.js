@@ -14,6 +14,10 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     REDEMPTION_CODE_PRIVATE_KEY: process.env.REDEMPTION_CODE_PRIVATE_KEY,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
   },
   server: {
     AUTH_DISCORD_ID: z.string(),
@@ -27,6 +31,10 @@ export const env = createEnv({
     .enum(["development", "test", "production"])
     .default("development"),
     REDEMPTION_CODE_PRIVATE_KEY: z.string(),
+    SMTP_HOST: z.string(),
+    SMTP_PASSWORD: z.string(),
+    SMTP_PORT: z.string().pipe(z.coerce.number()),
+    SMTP_USER: z.string(),
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
