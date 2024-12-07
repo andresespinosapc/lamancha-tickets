@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { ChevronUp, ChevronDown } from "lucide-react"
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { api } from "~/trpc/react";
 
 export type TicketTypeQuantities = Record<number, number>
@@ -9,21 +9,21 @@ export function TicketTypes(props: {
   ticketTypeQuantities: TicketTypeQuantities
   setTicketTypeQuantities: (quantities: TicketTypeQuantities) => void
 }) {
-  const [ticketTypes] = api.ticketType.list.useSuspenseQuery()
+  const [ticketTypes] = api.ticketType.list.useSuspenseQuery();
 
   const updateQuantity = (id: number, increment: boolean) => {
     const newTicketTypeQuantities = {
       ...props.ticketTypeQuantities,
       [id]: getQuantity(id) + (increment ? 1 : -1)
-    }
-    console.log(newTicketTypeQuantities)
+    };
+    console.log(newTicketTypeQuantities);
 
-    props.setTicketTypeQuantities(newTicketTypeQuantities)
-  }
+    props.setTicketTypeQuantities(newTicketTypeQuantities);
+  };
 
   const getQuantity = (id: number) => {
-    return props.ticketTypeQuantities[id] ?? 0
-  }
+    return props.ticketTypeQuantities[id] ?? 0;
+  };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
@@ -70,5 +70,5 @@ export function TicketTypes(props: {
         </p>
       </div>
     </div>
-  )
+  );
 }

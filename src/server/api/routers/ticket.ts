@@ -38,7 +38,7 @@ export const ticketRouter = createTRPCRouter({
           include: {
             attendee: true,
           }
-        })
+        });
         await tx.ticket.update({
           where: {
             id: ticket.id,
@@ -46,9 +46,9 @@ export const ticketRouter = createTRPCRouter({
           data: {
             redemptionCode: new TicketService().generateRedemptionCode({ ticket }),
           }
-        })
-      }))
-    })
+        });
+      }));
+    });
   }),
   generateBlankTickets: publicProcedure.input(z.object({
     tickets: z.array(z.object({
@@ -74,9 +74,9 @@ export const ticketRouter = createTRPCRouter({
           include: {
             attendee: true,
           }
-        })
-      }))
-    })
+        });
+      }));
+    });
     await Promise.all(newTickets.map(async ticket => {
       const completeTicketUrl = `${env.FRONTEND_BASE_URL}/tickets/${ticket.hashid}/complete`;
       return new EmailService().sendMail({
@@ -84,6 +84,6 @@ export const ticketRouter = createTRPCRouter({
         subject: 'Completa tus datos',
         text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
       });
-    }))
+    }));
   }),
 });

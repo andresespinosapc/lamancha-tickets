@@ -36,7 +36,8 @@ const config = {
           "attributes": false
         }
       }
-    ]
+    ],
+    "semi": ["error", "always"],
   }
-}
+};
 module.exports = config;
