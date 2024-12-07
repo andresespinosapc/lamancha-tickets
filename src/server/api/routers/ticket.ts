@@ -1,4 +1,5 @@
 import { z } from "zod";
+import QRCode from 'qrcode';
 
 import {
   createTRPCRouter,
@@ -85,5 +86,53 @@ export const ticketRouter = createTRPCRouter({
         text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
       });
     }));
+  }),
+  completeBlankTicket: publicProcedure.input(z.object({
+    ticketHashid: z.string(),
+    attendee: z.object({
+      firstName: z.string(),
+      lastName: z.string(),
+      documentId: z.string(),
+      phone: z.string().optional(),
+    }),
+  })).mutation(async ({ ctx, input }) => {
+    const ticketId = new HashidService().decode(input.ticketHashid);
+    if (ticketId === undefined) throw new Error('Invalid ticket hashid');
+
+    const { attendee, ticket } = await ctx.db.$transaction(async tx => {
+      const attendee = await tx.attendee.update({
+        where: {
+          id: ticketId,
+        },
+        data: input.attendee,
+      });
+      const ticket = await tx.ticket.update({
+        where: {
+          id: ticketId,
+        },
+        data: {
+          redemptionCode: new TicketService().generateRedemptionCode({
+            ticket: {
+              id: ticketId,
+              attendee: {
+                ...input.attendee,
+                phone: input.attendee.phone ?? null,
+                email: attendee.email,
+              },
+            }
+          }),
+        }
+      });
+
+      return { attendee, ticket };
+    });
+    if (ticket.redemptionCode === null) throw new Error('Failed to generate redemption code');
+
+    const qrCodeImage = await QRCode.toDataURL(ticket.redemptionCode);
+    await new EmailService().sendMail({
+      to: attendee.email,
+      subject: 'Tu ticket',
+      html: `Acá está tu QR para ingresar al evento </br> <img src="${qrCodeImage}">`
+    });
   }),
 });
