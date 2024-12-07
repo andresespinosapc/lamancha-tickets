@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Attendee" ALTER COLUMN "firstName" DROP NOT NULL,
+ALTER COLUMN "lastName" DROP NOT NULL,
+ALTER COLUMN "documentId" DROP NOT NULL;
