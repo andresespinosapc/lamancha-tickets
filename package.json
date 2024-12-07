@@ -40,6 +40,7 @@
     "lucide-react": "^0.464.0",
     "next": "^15.0.1",
     "next-auth": "5.0.0-beta.25",
+    "nextjs-routes": "^2.2.4",
     "nodemailer": "^6.9.16",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
