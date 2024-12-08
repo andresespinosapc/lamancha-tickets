@@ -135,4 +135,22 @@ export const ticketRouter = createTRPCRouter({
       html: `Acá está tu QR para ingresar al evento </br> <img src="${qrCodeImage}">`
     });
   }),
+  isTicketComplete: publicProcedure.input(z.object({
+    ticketHashid: z.string(),
+  })).query(async ({ ctx, input }) => {
+    const ticketId = new HashidService().decode(input.ticketHashid);
+    if (ticketId === undefined) throw new Error('Invalid ticket hashid');
+
+    const ticket = await ctx.db.ticket.findUnique({
+      where: {
+        id: ticketId,
+      },
+      select: {
+        redemptionCode: true,
+      }
+    });
+    if (ticket === null) throw new Error('Ticket not found');
+
+    return ticket.redemptionCode !== null;
+  }),
 });
