@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Link from "next/link";
 
@@ -54,5 +54,5 @@ export function Home(props: {
         </div>
       </div>
     </div>
-  )
+  );
 }
