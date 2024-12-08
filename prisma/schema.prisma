@@ -44,13 +44,15 @@ model TicketType {
 }
 
 model Ticket {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   attendeeId     Int
   ticketTypeId   Int
   redemptionCode String?
+  sellerId       String?
 
   attendee   Attendee   @relation(fields: [attendeeId], references: [id])
   ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+  seller     User?      @relation(fields: [sellerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -122,6 +124,7 @@ model User {
   sessions      Session[]
 
   moneyAccount MoneyAccount?
+  soldTickets  Ticket[]
 }
 
 model VerificationToken {
