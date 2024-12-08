@@ -1,11 +1,23 @@
 import { PrismaClient } from "@prisma/client";
 
 import { env } from "~/env";
+import { HashidService } from "./services/hashid";
 
 const createPrismaClient = () =>
   new PrismaClient({
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+  }).$extends({
+    result: {
+      ticket: {
+        hashid: {
+          needs: { id: true },
+          compute(ticket) {
+            return new HashidService().encode(ticket.id);
+          }
+        }
+      }
+    }
   });
 
 const globalForPrisma = globalThis as unknown as {
