@@ -14,6 +14,7 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     EVENT_NAME: process.env.EVENT_NAME,
     FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL,
+    HASHIDS_SALT: process.env.HASHIDS_SALT,
     NODE_ENV: process.env.NODE_ENV,
     REDEMPTION_CODE_PRIVATE_KEY: process.env.REDEMPTION_CODE_PRIVATE_KEY,
     SMTP_HOST: process.env.SMTP_HOST,
@@ -31,6 +32,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     EVENT_NAME: z.string(),
     FRONTEND_BASE_URL: z.string().url(),
+    HASHIDS_SALT: z.string(),
     NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
