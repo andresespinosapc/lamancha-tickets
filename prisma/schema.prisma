@@ -44,13 +44,15 @@ model TicketType {
 }
 
 model Ticket {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   attendeeId     Int
   ticketTypeId   Int
   redemptionCode String?
+  sellerId       String?
 
   attendee   Attendee   @relation(fields: [attendeeId], references: [id])
   ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+  seller     User?      @relation(fields: [sellerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,17 +112,25 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum Role {
+  user
+  seller
+  admin
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  password      String?
   image         String?
-  role          String?   @default("user")
+  role          Role?     @default(user)
   accounts      Account[]
   sessions      Session[]
 
   moneyAccount MoneyAccount?
+  soldTickets  Ticket[]
 }
 
 model VerificationToken {

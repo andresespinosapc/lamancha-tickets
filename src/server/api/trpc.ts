@@ -2,17 +2,20 @@
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
  * 2. You want to create a new middleware or type of procedure (see Part 3).
- *
+*
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
- */
+*/
 
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 
-import { auth } from "~/server/auth";
 import { db } from "~/server/db";
+import { type Role } from "../services/user";
+import { cookies } from "next/headers";
+import jwt from 'jsonwebtoken';
+import { env } from "~/env";
 
 /**
  * 1. CONTEXT
@@ -27,11 +30,29 @@ import { db } from "~/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await auth();
+  async function getUserFromCookies() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+
+    if (!token) return null;
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, env.JWT_SECRET);
+    } catch (e) {
+      return null;
+    }
+
+    const parsedDecoded = z.object({ userId: z.string() }).parse(decoded);
+    return db.user.findUnique({ where: { id: parsedDecoded.userId } });
+  }
+  const user = await getUserFromCookies();
 
   return {
     db,
-    session,
+    session: {
+      user,
+    },
     ...opts,
   };
 };
@@ -110,6 +131,26 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
+export function createProtectedProcedure(roles: Role[]) {
+  return t.procedure
+    .use(timingMiddleware)
+    .use(({ ctx, next }) => {
+      if (!ctx.session?.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      if (roles.length > 0 && ctx.session.user.role && !roles.includes(ctx.session.user.role)) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      return next({
+        ctx: {
+          session: { ...ctx.session, user: ctx.session.user },
+        },
+      });
+    });
+}
+
 /**
  * Protected (authenticated) procedure
  *
@@ -118,16 +159,4 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session || !ctx.session.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  });
+export const protectedProcedure = createProtectedProcedure([]);
