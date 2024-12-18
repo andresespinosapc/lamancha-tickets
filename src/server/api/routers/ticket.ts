@@ -153,4 +153,9 @@ export const ticketRouter = createTRPCRouter({
 
     return ticket.redemptionCode !== null;
   }),
+  decryptRedemptionCode: publicProcedure.input(z.object({
+    redemptionCode: z.string(),
+  })).mutation(async ({ input }) => {
+    return new TicketService().decryptRedemptionCode(input.redemptionCode);
+  }),
 });
