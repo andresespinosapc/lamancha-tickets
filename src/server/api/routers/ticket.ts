@@ -2,6 +2,7 @@ import { z } from "zod";
 import QRCode from 'qrcode';
 
 import {
+  createProtectedProcedure,
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
@@ -11,7 +12,7 @@ import { env } from "~/env";
 import { HashidService } from "~/server/services/hashid";
 
 export const ticketRouter = createTRPCRouter({
-  generateTickets: publicProcedure.input(z.object({
+  generateTickets: createProtectedProcedure(['admin']).input(z.object({
     tickets: z.array(z.object({
       attendee: z.object({
         firstName: z.string(),
@@ -51,7 +52,7 @@ export const ticketRouter = createTRPCRouter({
       }));
     });
   }),
-  generateBlankTickets: publicProcedure.input(z.object({
+  generateBlankTickets: createProtectedProcedure(['seller', 'admin']).input(z.object({
     tickets: z.array(z.object({
       ticketTypeId: z.number(),
       attendee: z.object({
@@ -70,7 +71,7 @@ export const ticketRouter = createTRPCRouter({
               connect: {
                 id: ticketData.ticketTypeId,
               }
-            }
+            },
           },
           include: {
             attendee: true,
