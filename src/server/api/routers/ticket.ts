@@ -72,6 +72,11 @@ export const ticketRouter = createTRPCRouter({
                 id: ticketData.ticketTypeId,
               }
             },
+            seller: {
+              connect: {
+                id: ctx.session.user.id,
+              }
+            }
           },
           include: {
             attendee: true,
@@ -80,12 +85,7 @@ export const ticketRouter = createTRPCRouter({
       }));
     });
     await Promise.all(newTickets.map(async ticket => {
-      const completeTicketUrl = `${env.FRONTEND_BASE_URL}/tickets/${ticket.hashid}/complete`;
-      return new EmailService().sendMail({
-        to: ticket.attendee.email,
-        subject: 'Completa tus datos',
-        text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
-      });
+      return new TicketService().sendBlankTicketEmail({ ticket });
     }));
   }),
   completeBlankTicket: publicProcedure.input(z.object({
@@ -158,5 +158,34 @@ export const ticketRouter = createTRPCRouter({
     redemptionCode: z.string(),
   })).mutation(async ({ input }) => {
     return new TicketService().decryptRedemptionCode(input.redemptionCode);
+  }),
+  list: createProtectedProcedure(['seller', 'admin']).query(async ({ ctx }) => {
+    return ctx.db.ticket.findMany({
+      where: {
+        sellerId: ctx.session.user.id,
+      },
+      include: {
+        attendee: true,
+        ticketType: true,
+      }
+    });
+  }),
+  resendBlankTicketEmail: createProtectedProcedure(['seller', 'admin']).input(z.object({
+    ticketHashid: z.string(),
+  })).mutation(async ({ ctx, input }) => {
+    const ticketId = new HashidService().decode(input.ticketHashid);
+    if (ticketId === undefined) throw new Error('Invalid ticket hashid');
+
+    const ticket = await ctx.db.ticket.findUnique({
+      where: {
+        id: ticketId,
+      },
+      include: {
+        attendee: true,
+      }
+    });
+    if (ticket === null) throw new Error('Ticket not found');
+
+    await new TicketService().sendBlankTicketEmail({ ticket });
   }),
 });

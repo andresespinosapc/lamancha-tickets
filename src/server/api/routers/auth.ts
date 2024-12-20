@@ -34,7 +34,7 @@ export const authRouter = createTRPCRouter({
       });
     }
 
-    const token = jwt.sign({ userId: user.id }, env.JWT_SECRET, { expiresIn: 60 * 60 });
+    const token = jwt.sign({ userId: user.id }, env.JWT_SECRET, { expiresIn: 2*7*24*60*60 });
 
     return { token };
   }),

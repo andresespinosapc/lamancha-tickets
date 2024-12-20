@@ -15,7 +15,25 @@ const createPrismaClient = () =>
           compute(ticket) {
             return new HashidService().encode(ticket.id);
           }
-        }
+        },
+        status: {
+          needs: { redemptionCode: true },
+          compute(ticket) {
+            return ticket.redemptionCode ? "qr_generated" : "payed" as 'qr_generated' | 'payed' | 'revoked';
+          }
+        },
+      },
+      attendee: {
+        fullName: {
+          needs: { firstName: true, lastName: true },
+          compute(attendee) {
+            if (!attendee.firstName && !attendee.lastName) {
+              return null;
+            }
+
+            return `${attendee.firstName} ${attendee.lastName}`.trim();
+          }
+        },
       }
     }
   });
