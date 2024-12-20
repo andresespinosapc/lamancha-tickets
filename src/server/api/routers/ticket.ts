@@ -85,12 +85,7 @@ export const ticketRouter = createTRPCRouter({
       }));
     });
     await Promise.all(newTickets.map(async ticket => {
-      const completeTicketUrl = `${env.FRONTEND_BASE_URL}/tickets/${ticket.hashid}/complete`;
-      return new EmailService().sendMail({
-        to: ticket.attendee.email,
-        subject: 'Completa tus datos',
-        text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
-      });
+      return new TicketService().sendBlankTicketEmail({ ticket });
     }));
   }),
   completeBlankTicket: publicProcedure.input(z.object({

@@ -2,6 +2,7 @@ import { zu } from "zod_utilz";
 import { EncryptionService } from "./encryption";
 import { env } from "~/env";
 import { z } from "zod";
+import { EmailService } from "./email";
 
 const DecryptedRedemptionCodeSchema = z.object({
   ticketId: z.number(),
@@ -45,5 +46,21 @@ export class TicketService {
     const decryptedString = new EncryptionService().decrypt(redemptionCode, env.REDEMPTION_CODE_PRIVATE_KEY);
 
     return zu.stringToJSON().pipe(DecryptedRedemptionCodeSchema).parse(decryptedString);
+  }
+  sendBlankTicketEmail(options: {
+    ticket: {
+      hashid: string;
+      attendee: {
+        email: string;
+      }
+    }
+  }) {
+    const completeTicketUrl = `${env.FRONTEND_BASE_URL}/tickets/${options.ticket.hashid}/complete`;
+
+    return new EmailService().sendMail({
+      to: options.ticket.attendee.email,
+      subject: 'Completa tus datos',
+      text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
+    });
   }
 }
