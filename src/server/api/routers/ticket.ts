@@ -164,4 +164,15 @@ export const ticketRouter = createTRPCRouter({
   })).mutation(async ({ input }) => {
     return new TicketService().decryptRedemptionCode(input.redemptionCode);
   }),
+  list: createProtectedProcedure(['seller', 'admin']).query(async ({ ctx }) => {
+    return ctx.db.ticket.findMany({
+      where: {
+        sellerId: ctx.session.user.id,
+      },
+      include: {
+        attendee: true,
+        ticketType: true,
+      }
+    });
+  }),
 });
