@@ -72,6 +72,11 @@ export const ticketRouter = createTRPCRouter({
                 id: ticketData.ticketTypeId,
               }
             },
+            seller: {
+              connect: {
+                id: ctx.session.user.id,
+              }
+            }
           },
           include: {
             attendee: true,
