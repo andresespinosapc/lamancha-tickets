@@ -170,4 +170,22 @@ export const ticketRouter = createTRPCRouter({
       }
     });
   }),
+  resendBlankTicketEmail: createProtectedProcedure(['seller', 'admin']).input(z.object({
+    ticketHashid: z.string(),
+  })).mutation(async ({ ctx, input }) => {
+    const ticketId = new HashidService().decode(input.ticketHashid);
+    if (ticketId === undefined) throw new Error('Invalid ticket hashid');
+
+    const ticket = await ctx.db.ticket.findUnique({
+      where: {
+        id: ticketId,
+      },
+      include: {
+        attendee: true,
+      }
+    });
+    if (ticket === null) throw new Error('Ticket not found');
+
+    await new TicketService().sendBlankTicketEmail({ ticket });
+  }),
 });
