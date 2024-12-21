@@ -7,6 +7,7 @@ import { AttendeeForm, type AttendeeFormValues } from "~/app/_components/Attende
 import { type Session } from "next-auth";
 import { api } from "~/trpc/react";
 import { useState } from "react";
+import { PaymentMethods } from "./PaymentMethods";
 
 export function Home(props: {
   session: Session | null;
@@ -37,9 +38,13 @@ export function Home(props: {
           {props.session ? "Sign out" : "Sign in"}
         </Link>
       </div>
-      <div className="py-12">
-        <TicketTypes />
+      <div className="pt-12">
+        <TicketTypes/>
       </div>
+      <div>
+        <PaymentMethods />
+      </div>
+      <div className="pt-12" />
       <div className="bg-gray-100 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <AttendeeForm
