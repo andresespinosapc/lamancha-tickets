@@ -126,9 +126,9 @@ model SellerInfo {
   phone                      String?
   email                      String?
   preferredContactMethod     ContactMethod?
-  userId                     String?        @unique
+  userId                     String         @unique
 
-  user User? @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 enum Role {
