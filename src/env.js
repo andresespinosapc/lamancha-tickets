@@ -14,6 +14,7 @@ export const env = createEnv({
     FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL,
     HASHIDS_SALT: process.env.HASHIDS_SALT,
     JWT_SECRET: process.env.JWT_SECRET,
+    MAX_TICKETS_PER_SELLER: process.env.MAX_TICKETS_PER_SELLER,
     NODE_ENV: process.env.NODE_ENV,
     REDEMPTION_CODE_PRIVATE_KEY: process.env.REDEMPTION_CODE_PRIVATE_KEY,
     SMTP_HOST: process.env.SMTP_HOST,
@@ -31,6 +32,7 @@ export const env = createEnv({
     FRONTEND_BASE_URL: z.string().url(),
     HASHIDS_SALT: z.string(),
     JWT_SECRET: z.string(),
+    MAX_TICKETS_PER_SELLER: z.string().pipe(z.coerce.number()),
     NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),

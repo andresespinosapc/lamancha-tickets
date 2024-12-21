@@ -112,6 +112,25 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum ContactMethod {
+  instagram
+  email
+  phone
+}
+
+model SellerInfo {
+  id                         Int            @id @default(autoincrement())
+  encryptedFlowApiKey        String?
+  encryptedMercadoPagoApiKey String?
+  instagram                  String?
+  phone                      String?
+  email                      String?
+  preferredContactMethod     ContactMethod?
+  userId                     String         @unique
+
+  user User @relation(fields: [userId], references: [id])
+}
+
 enum Role {
   user
   seller
@@ -131,6 +150,7 @@ model User {
 
   moneyAccount MoneyAccount?
   soldTickets  Ticket[]
+  sellerInfo   SellerInfo?
 }
 
 model VerificationToken {
