@@ -113,9 +113,10 @@ model Session {
 }
 
 model SellerInfo {
-  id                  Int     @id @default(autoincrement())
-  encryptedFlowApiKey String?
-  userId              String? @unique
+  id                         Int     @id @default(autoincrement())
+  encryptedFlowApiKey        String?
+  encryptedMercadoPagoApiKey String?
+  userId                     String? @unique
 
   user User? @relation(fields: [userId], references: [id])
 }
