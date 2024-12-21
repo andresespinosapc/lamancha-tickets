@@ -27,7 +27,7 @@ export function TicketTypes(props: {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Ticket List</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Entradas disponibles</h1>
       <ul className="space-y-4">
         {ticketTypes.map((ticket) => (
           <li
