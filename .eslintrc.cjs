@@ -5,7 +5,8 @@ const config = {
     "project": true
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "eslint-comments"
   ],
   "extends": [
     "next/core-web-vitals",
@@ -38,6 +39,7 @@ const config = {
       }
     ],
     "semi": ["error", "always"],
+    "eslint-comments/no-restricted-disable": ["error", "@typescript-eslint/no-explicit-any"],
   }
 };
 module.exports = config;
