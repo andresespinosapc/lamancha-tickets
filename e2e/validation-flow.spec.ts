@@ -107,8 +107,9 @@ test.describe("Ticket Validation E2E Flow", () => {
       const table = page.locator("table");
       await expect(table).toBeVisible();
 
-      // Check table headers exist
-      await expect(table.locator("th")).toHaveCount.greaterThan(3);
+      // Check table headers exist (at least 4 columns)
+      const headerCount = await table.locator("th").count();
+      expect(headerCount).toBeGreaterThan(3);
     });
 
     test("admin can search validation records", async ({ page }) => {

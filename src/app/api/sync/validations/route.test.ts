@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 // Mock dependencies
 vi.mock("~/env", () => ({
@@ -29,6 +29,13 @@ import { POST } from "./route";
 import { isGlobalMode } from "~/server/services/serverMode";
 import { db } from "~/server/db";
 
+interface SyncResponse {
+  error?: string;
+  success?: boolean;
+  synced?: number;
+  failed?: number;
+}
+
 function createMockRequest(
   body: unknown,
   headers: Record<string, string> = {}
@@ -51,7 +58,7 @@ describe("POST /api/sync/validations", () => {
 
     const request = createMockRequest({}, {});
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(403);
     expect(data.error).toBe("Sync endpoint only available on global server");
@@ -62,7 +69,7 @@ describe("POST /api/sync/validations", () => {
 
     const request = createMockRequest({}, {});
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(401);
     expect(data.error).toBe("Invalid API key");
@@ -76,7 +83,7 @@ describe("POST /api/sync/validations", () => {
       { "X-Sync-API-Key": "wrong-api-key" }
     );
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(401);
     expect(data.error).toBe("Invalid API key");
@@ -90,7 +97,7 @@ describe("POST /api/sync/validations", () => {
       { "X-Sync-API-Key": "valid-api-key" }
     );
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(400);
     expect(data.error).toBe("Missing local server ID");
@@ -113,7 +120,7 @@ describe("POST /api/sync/validations", () => {
       "X-Local-Server-ID": "local-1",
     });
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(500);
     expect(data.error).toBe("Sync failed");
@@ -150,7 +157,7 @@ describe("POST /api/sync/validations", () => {
       "X-Local-Server-ID": "local-1",
     });
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
@@ -161,7 +168,7 @@ describe("POST /api/sync/validations", () => {
         ticketId: 100,
         guardId: "guard-1",
         localServerId: "local-1",
-      }),
+      }) as unknown,
     });
   });
 
@@ -199,7 +206,7 @@ describe("POST /api/sync/validations", () => {
       "X-Local-Server-ID": "local-1",
     });
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
@@ -246,7 +253,7 @@ describe("POST /api/sync/validations", () => {
       "X-Local-Server-ID": "local-1",
     });
     const response = await POST(request);
-    const data = await response.json();
+    const data = (await response.json()) as SyncResponse;
 
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);

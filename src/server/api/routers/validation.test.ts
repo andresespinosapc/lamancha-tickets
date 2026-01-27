@@ -133,7 +133,7 @@ describe("validation router", () => {
 
     it("accepts optional search parameter", () => {
       const inputWithSearch = { limit: 50, offset: 0, search: "test" };
-      const inputWithoutSearch = { limit: 50, offset: 0 };
+      const inputWithoutSearch: { limit: number; offset: number; search?: string } = { limit: 50, offset: 0 };
 
       expect(inputWithSearch).toHaveProperty("search");
       expect(inputWithoutSearch.search).toBeUndefined();

@@ -41,7 +41,7 @@ describe("ValidationService", () => {
         guard: { name: "Guard Name", email: "guard@test.com" },
       };
 
-      vi.mocked(db.ticketValidation.create).mockResolvedValue(mockValidation);
+      vi.mocked(db.ticketValidation.create).mockResolvedValue(mockValidation as never);
       vi.mocked(getLocalServerId).mockReturnValue(null);
 
       const result = await service.validateTicket({
@@ -81,7 +81,7 @@ describe("ValidationService", () => {
         guard: { name: "Guard Name", email: "guard@test.com" },
       };
 
-      vi.mocked(db.ticketValidation.create).mockResolvedValue(mockValidation);
+      vi.mocked(db.ticketValidation.create).mockResolvedValue(mockValidation as never);
       vi.mocked(getLocalServerId).mockReturnValue("entrance-main");
 
       await service.validateTicket({
@@ -93,8 +93,8 @@ describe("ValidationService", () => {
         expect.objectContaining({
           data: expect.objectContaining({
             localServerId: "entrance-main",
-          }),
-        })
+          }) as unknown,
+        }) as unknown
       );
     });
   });
@@ -199,7 +199,7 @@ describe("ValidationService", () => {
 
       expect(db.ticketValidation.updateMany).toHaveBeenCalledWith({
         where: { id: { in: [1, 2, 3] } },
-        data: { syncedAt: expect.any(Date) },
+        data: { syncedAt: expect.any(Date) as unknown },
       });
     });
   });
@@ -242,10 +242,10 @@ describe("ValidationService", () => {
                     firstName: { contains: "john", mode: "insensitive" },
                   },
                 },
-              }),
-            ]),
-          }),
-        })
+              }) as unknown,
+            ]) as unknown,
+          }) as unknown,
+        }) as unknown
       );
     });
 
@@ -270,8 +270,8 @@ describe("ValidationService", () => {
               gte: dateFrom,
               lte: dateTo,
             },
-          }),
-        })
+          }) as unknown,
+        }) as unknown
       );
     });
 

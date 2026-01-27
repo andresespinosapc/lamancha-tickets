@@ -97,8 +97,8 @@ describe("SyncService", () => {
             "Content-Type": "application/json",
             "X-Sync-API-Key": "test-api-key",
             "X-Local-Server-ID": "test-server",
-          }),
-        })
+          }) as unknown,
+        }) as unknown
       );
     });
 
