@@ -3,6 +3,7 @@ import { EncryptionService } from "./encryption";
 import { env } from "~/env";
 import { z } from "zod";
 import { EmailService } from "./email";
+import { blankTicketEmailTemplate } from "./email-templates";
 
 const DecryptedRedemptionCodeSchema = z.object({
   ticketId: z.number(),
@@ -59,11 +60,13 @@ export class TicketService {
     }
   }) {
     const completeTicketUrl = `${env.FRONTEND_BASE_URL}/tickets/${options.ticket.hashid}/complete`;
+    const { html, text } = blankTicketEmailTemplate({ completeTicketUrl });
 
     return new EmailService().sendMail({
       to: options.ticket.attendee.email,
-      subject: 'Completa tus datos',
-      text: `Hola, por favor completa tus datos en el siguiente link para generar tu ticket: ${completeTicketUrl}`,
+      subject: `🎫 Tu entrada para ${env.EVENT_NAME} - Completa tus datos`,
+      html,
+      text,
     });
   }
 }
