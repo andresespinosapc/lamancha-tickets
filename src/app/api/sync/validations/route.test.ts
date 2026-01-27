@@ -17,10 +17,12 @@ vi.mock("~/server/db", () => ({
   db: {
     user: {
       findUnique: vi.fn(),
+      findMany: vi.fn(),
     },
     ticketValidation: {
       findFirst: vi.fn(),
       create: vi.fn(),
+      upsert: vi.fn(),
     },
   },
 }));
@@ -126,13 +128,12 @@ describe("POST /api/sync/validations", () => {
     expect(data.error).toBe("Sync failed");
   });
 
-  it("inserts new validations", async () => {
+  it("inserts new validations using upsert", async () => {
     vi.mocked(isGlobalMode).mockReturnValue(true);
 
     const mockGuard = { id: "guard-1", email: "guard@test.com" };
-    vi.mocked(db.user.findUnique).mockResolvedValue(mockGuard as never);
-    vi.mocked(db.ticketValidation.findFirst).mockResolvedValue(null);
-    vi.mocked(db.ticketValidation.create).mockResolvedValue({
+    vi.mocked(db.user.findMany).mockResolvedValue([mockGuard] as never);
+    vi.mocked(db.ticketValidation.upsert).mockResolvedValue({
       id: 1,
       ticketId: 100,
       guardId: "guard-1",
@@ -163,16 +164,25 @@ describe("POST /api/sync/validations", () => {
     expect(data.success).toBe(true);
     expect(data.synced).toBe(1);
     expect(data.failed).toBe(0);
-    expect(db.ticketValidation.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        ticketId: 100,
-        guardId: "guard-1",
-        localServerId: "local-1",
-      }) as unknown,
-    });
+    expect(db.ticketValidation.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          ticketId_guardId_validatedAt: {
+            ticketId: 100,
+            guardId: "guard-1",
+            validatedAt: new Date("2024-01-15T10:00:00Z"),
+          },
+        },
+        create: expect.objectContaining({
+          ticketId: 100,
+          guardId: "guard-1",
+          localServerId: "local-1",
+        }) as unknown,
+      }) as unknown
+    );
   });
 
-  it("does not duplicate existing validations", async () => {
+  it("handles existing validations via upsert (updates syncedAt)", async () => {
     vi.mocked(isGlobalMode).mockReturnValue(true);
 
     const mockGuard = { id: "guard-1", email: "guard@test.com" };
@@ -185,8 +195,9 @@ describe("POST /api/sync/validations", () => {
       syncedAt: new Date(),
     };
 
-    vi.mocked(db.user.findUnique).mockResolvedValue(mockGuard as never);
-    vi.mocked(db.ticketValidation.findFirst).mockResolvedValue(
+    vi.mocked(db.user.findMany).mockResolvedValue([mockGuard] as never);
+    // Upsert will return the existing record with updated syncedAt
+    vi.mocked(db.ticketValidation.upsert).mockResolvedValue(
       existingValidation as never
     );
 
@@ -211,18 +222,17 @@ describe("POST /api/sync/validations", () => {
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
     expect(data.synced).toBe(1);
-    expect(db.ticketValidation.create).not.toHaveBeenCalled();
+    // Upsert is called for both new and existing validations
+    expect(db.ticketValidation.upsert).toHaveBeenCalled();
   });
 
   it("returns synced and failed counts", async () => {
     vi.mocked(isGlobalMode).mockReturnValue(true);
 
+    // Only one guard exists in the DB
     const mockGuard = { id: "guard-1", email: "guard@test.com" };
-    vi.mocked(db.user.findUnique)
-      .mockResolvedValueOnce(mockGuard as never)
-      .mockResolvedValueOnce(null);
-    vi.mocked(db.ticketValidation.findFirst).mockResolvedValue(null);
-    vi.mocked(db.ticketValidation.create).mockResolvedValue({
+    vi.mocked(db.user.findMany).mockResolvedValue([mockGuard] as never);
+    vi.mocked(db.ticketValidation.upsert).mockResolvedValue({
       id: 1,
       ticketId: 100,
       guardId: "guard-1",

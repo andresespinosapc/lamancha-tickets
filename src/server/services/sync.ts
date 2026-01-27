@@ -17,6 +17,10 @@ export class SyncService {
       );
     }
 
+    if (!env.LOCAL_SERVER_ID) {
+      throw new Error("LOCAL_SERVER_ID is required for sync in local mode");
+    }
+
     const unsyncedValidations =
       await this.validationService.getUnsyncedValidations();
 
@@ -31,7 +35,7 @@ export class SyncService {
         headers: {
           "Content-Type": "application/json",
           "X-Sync-API-Key": env.GLOBAL_SERVER_SYNC_API_KEY,
-          "X-Local-Server-ID": env.LOCAL_SERVER_ID ?? "unknown",
+          "X-Local-Server-ID": env.LOCAL_SERVER_ID,
         },
         body: JSON.stringify({
           validations: unsyncedValidations.map((v) => ({

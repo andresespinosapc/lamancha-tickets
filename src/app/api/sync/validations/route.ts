@@ -40,30 +40,36 @@ export async function POST(request: NextRequest) {
     const body: unknown = await request.json();
     const payload = SyncPayloadSchema.parse(body);
 
+    // Fetch all guards upfront to avoid N+1 queries
+    const guardEmails = [...new Set(payload.validations.map((v) => v.guardEmail))];
+    const guards = await db.user.findMany({
+      where: { email: { in: guardEmails } },
+    });
+    const guardMap = new Map(guards.map((g) => [g.email, g]));
+
     const results = await Promise.allSettled(
       payload.validations.map(async (v) => {
-        const guard = await db.user.findUnique({
-          where: { email: v.guardEmail },
-        });
+        const guard = guardMap.get(v.guardEmail);
 
         if (!guard) {
           throw new Error(`Guard not found: ${v.guardEmail}`);
         }
 
-        const existingValidation = await db.ticketValidation.findFirst({
+        // Use upsert to avoid race conditions - the unique constraint
+        // @@unique([ticketId, guardId, validatedAt]) ensures no duplicates
+        return db.ticketValidation.upsert({
           where: {
-            ticketId: v.ticketId,
-            guardId: guard.id,
-            validatedAt: new Date(v.validatedAt),
+            ticketId_guardId_validatedAt: {
+              ticketId: v.ticketId,
+              guardId: guard.id,
+              validatedAt: new Date(v.validatedAt),
+            },
           },
-        });
-
-        if (existingValidation) {
-          return existingValidation;
-        }
-
-        return db.ticketValidation.create({
-          data: {
+          update: {
+            // If exists, just update syncedAt
+            syncedAt: new Date(),
+          },
+          create: {
             ticketId: v.ticketId,
             guardId: guard.id,
             validatedAt: new Date(v.validatedAt),

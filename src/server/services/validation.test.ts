@@ -10,6 +10,7 @@ vi.mock("../db", () => ({
       count: vi.fn(),
       updateMany: vi.fn(),
     },
+    $queryRaw: vi.fn(),
   },
 }));
 
@@ -297,19 +298,16 @@ describe("ValidationService", () => {
   describe("getValidationStats", () => {
     it("counts total validations correctly", async () => {
       vi.mocked(db.ticketValidation.count).mockResolvedValue(50);
-      vi.mocked(db.ticketValidation.findMany).mockResolvedValue([]);
+      vi.mocked(db.$queryRaw).mockResolvedValue([{ count: BigInt(30) }]);
 
       const result = await service.getValidationStats();
 
       expect(result.totalValidations).toBe(50);
     });
 
-    it("counts unique validated tickets", async () => {
-      const uniqueTickets = [{ ticketId: 1 }, { ticketId: 2 }, { ticketId: 3 }];
+    it("counts unique validated tickets using raw SQL", async () => {
       vi.mocked(db.ticketValidation.count).mockResolvedValue(10);
-      vi.mocked(db.ticketValidation.findMany).mockResolvedValue(
-        uniqueTickets as never
-      );
+      vi.mocked(db.$queryRaw).mockResolvedValue([{ count: BigInt(3) }]);
 
       const result = await service.getValidationStats();
 
@@ -320,7 +318,7 @@ describe("ValidationService", () => {
       vi.mocked(db.ticketValidation.count)
         .mockResolvedValueOnce(100) // total
         .mockResolvedValueOnce(15); // today
-      vi.mocked(db.ticketValidation.findMany).mockResolvedValue([]);
+      vi.mocked(db.$queryRaw).mockResolvedValue([{ count: BigInt(80) }]);
 
       const result = await service.getValidationStats();
 

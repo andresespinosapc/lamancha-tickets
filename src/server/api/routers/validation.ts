@@ -23,7 +23,15 @@ export const validationRouter = createTRPCRouter({
         });
       }
 
-      const decrypted = ticketService.decryptRedemptionCode(input.redemptionCode);
+      let decrypted;
+      try {
+        decrypted = ticketService.decryptRedemptionCode(input.redemptionCode);
+      } catch {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid or tampered redemption code",
+        });
+      }
 
       const existingValidations =
         await validationService.getTicketValidationHistory(decrypted.ticketId);

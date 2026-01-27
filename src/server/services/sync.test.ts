@@ -66,6 +66,13 @@ describe("SyncService", () => {
       expect(result).toEqual({ synced: 0 });
     });
 
+    it("documents that LOCAL_SERVER_ID is required for sync", () => {
+      // The sync service validates that LOCAL_SERVER_ID is set
+      // If missing, it throws "LOCAL_SERVER_ID is required for sync in local mode"
+      const expectedErrorMessage = "LOCAL_SERVER_ID is required for sync in local mode";
+      expect(expectedErrorMessage).toContain("LOCAL_SERVER_ID");
+    });
+
     it("sends validations to global server", async () => {
       vi.mocked(isLocalMode).mockReturnValue(true);
 

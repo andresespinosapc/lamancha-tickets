@@ -181,4 +181,6 @@ model TicketValidation {
   @@index([ticketId])
   @@index([guardId])
   @@index([syncedAt])
+  @@index([validatedAt])
+  @@unique([ticketId, guardId, validatedAt])
 }

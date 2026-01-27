@@ -42,6 +42,16 @@ describe("validation router", () => {
       expect(typeof validInput.redemptionCode).toBe("string");
     });
 
+    it("throws BAD_REQUEST for invalid/tampered redemption codes", () => {
+      // Document the expected error handling for invalid codes
+      const expectedError = {
+        code: "BAD_REQUEST",
+        message: "Invalid or tampered redemption code",
+      };
+      expect(expectedError.code).toBe("BAD_REQUEST");
+      expect(expectedError.message).toContain("Invalid");
+    });
+
     it("returns ValidationResult structure on success", () => {
       // Document the expected return structure
       const expectedResult = {

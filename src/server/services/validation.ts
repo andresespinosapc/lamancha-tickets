@@ -129,13 +129,13 @@ export class ValidationService {
   }
 
   async getValidationStats() {
-    const [totalValidations, uniqueTicketsValidated, validationsToday] =
+    const [totalValidations, uniqueTicketsResult, validationsToday] =
       await Promise.all([
         db.ticketValidation.count(),
-        db.ticketValidation.findMany({
-          distinct: ["ticketId"],
-          select: { ticketId: true },
-        }),
+        // Use raw SQL for efficient distinct count instead of fetching all records
+        db.$queryRaw<[{ count: bigint }]>`
+          SELECT COUNT(DISTINCT "ticketId") as count FROM "TicketValidation"
+        `,
         db.ticketValidation.count({
           where: {
             validatedAt: {
@@ -147,7 +147,7 @@ export class ValidationService {
 
     return {
       totalValidations,
-      uniqueTicketsValidated: uniqueTicketsValidated.length,
+      uniqueTicketsValidated: Number(uniqueTicketsResult[0]?.count ?? 0),
       validationsToday,
     };
   }
