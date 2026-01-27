@@ -37,7 +37,12 @@ export const ticketRouter = createTRPCRouter({
               }
             }
           },
+          include: {
+            attendee: true,
+          }
         });
+
+        // Generate redemption code using the created ticket data
         await tx.ticket.update({
           where: {
             id: ticket.id,
@@ -47,11 +52,11 @@ export const ticketRouter = createTRPCRouter({
               ticket: {
                 id: ticket.id,
                 attendee: {
-                  firstName: ticketData.attendee.firstName,
-                  lastName: ticketData.attendee.lastName,
-                  email: ticketData.attendee.email,
-                  documentId: ticketData.attendee.documentId,
-                  phone: ticketData.attendee.phone ?? null,
+                  firstName: ticket.attendee.firstName!,
+                  lastName: ticket.attendee.lastName!,
+                  email: ticket.attendee.email,
+                  documentId: ticket.attendee.documentId!,
+                  phone: ticket.attendee.phone,
                 }
               }
             }),
