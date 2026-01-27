@@ -14,7 +14,7 @@ import { z, ZodError } from "zod";
 import { db } from "~/server/db";
 import { type Role } from "../services/user";
 import { cookies } from "next/headers";
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 import { env } from "~/env";
 
 /**
@@ -36,15 +36,14 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
     if (!token) return null;
 
-    let decoded;
     try {
-      decoded = jwt.verify(token, env.JWT_SECRET);
+      const secret = new TextEncoder().encode(env.JWT_SECRET);
+      const { payload } = await jwtVerify(token, secret);
+      const parsedDecoded = z.object({ userId: z.string() }).parse(payload);
+      return db.user.findUnique({ where: { id: parsedDecoded.userId } });
     } catch (e) {
       return null;
     }
-
-    const parsedDecoded = z.object({ userId: z.string() }).parse(decoded);
-    return db.user.findUnique({ where: { id: parsedDecoded.userId } });
   }
   const user = await getUserFromCookies();
 

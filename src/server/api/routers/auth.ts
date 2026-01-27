@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { compareSync } from "bcrypt";
 import { z } from "zod";
 import { env } from "~/env";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 
 import {
   createTRPCRouter,
@@ -34,7 +34,11 @@ export const authRouter = createTRPCRouter({
       });
     }
 
-    const token = jwt.sign({ userId: user.id }, env.JWT_SECRET, { expiresIn: 2*7*24*60*60 });
+    const secret = new TextEncoder().encode(env.JWT_SECRET);
+    const token = await new SignJWT({ userId: user.id })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('2w')
+      .sign(secret);
 
     return { token };
   }),
