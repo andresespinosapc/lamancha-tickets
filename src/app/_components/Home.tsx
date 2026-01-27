@@ -1,13 +1,12 @@
 'use client';
 
-import Link from "next/link";
-
 import { type TicketTypeQuantities, TicketTypes } from "~/app/_components/TicketTypes";
 import { AttendeeForm, type AttendeeFormValues } from "~/app/_components/AttendeeForm";
 import { type Session } from "next-auth";
 import { api } from "~/trpc/react";
 import { useState } from "react";
 import { PaymentMethods } from "./PaymentMethods";
+import NavBar from "./NavBar";
 
 export function Home(props: {
   session: Session | null;
@@ -27,17 +26,7 @@ export function Home(props: {
 
   return (
     <div>
-      <div className="flex justify-end mr-3">
-        <p className="text-center text-2xl text-white">
-          {props.session && <span>Logged in as {props.session.user?.name}</span>}
-        </p>
-        <Link
-          href={props.session ? "/api/auth/signout" : "/api/auth/signin"}
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-        >
-          {props.session ? "Sign out" : "Sign in"}
-        </Link>
-      </div>
+      <NavBar />
       <div className="pt-12">
         <TicketTypes/>
       </div>
