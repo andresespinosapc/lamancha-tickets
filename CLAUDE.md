@@ -148,6 +148,13 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
 
 ## Code Conventions
 
+### User-Facing Text
+- **All user-facing text must be in Spanish.** This includes:
+  - Error messages (tRPC errors, validation messages)
+  - UI labels, buttons, and placeholders
+  - Toast notifications and alerts
+  - Page titles and headings
+
 ### Commit Messages
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification.
 

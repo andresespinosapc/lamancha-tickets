@@ -8,12 +8,12 @@ export class SyncService {
 
   async syncValidationsToGlobal() {
     if (!isLocalMode()) {
-      throw new Error("Sync only available in local mode");
+      throw new Error("La sincronización solo está disponible en modo local");
     }
 
     if (!env.GLOBAL_SERVER_URL || !env.GLOBAL_SERVER_SYNC_API_KEY) {
       throw new Error(
-        "GLOBAL_SERVER_URL and GLOBAL_SERVER_SYNC_API_KEY required for sync"
+        "Se requieren GLOBAL_SERVER_URL y GLOBAL_SERVER_SYNC_API_KEY para sincronizar"
       );
     }
 
@@ -45,7 +45,7 @@ export class SyncService {
     );
 
     if (!response.ok) {
-      throw new Error(`Sync failed: ${response.statusText}`);
+      throw new Error(`Error de sincronización: ${response.statusText}`);
     }
 
     await this.validationService.markAsSynced(
