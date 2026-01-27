@@ -13,64 +13,88 @@ export default function NavBar() {
 
   function logout() {
     new Cookies().remove("token", { path: "/" });
-
     window.location.href = "/";
   }
 
   const canAccessAdmin = user?.role === 'admin' || user?.role === 'seller';
 
   return (
-    <>
-      <div className="flex justify-between items-center p-3">
-        {/* Logo/Home link */}
-        <Link href="/" className="text-xl font-bold hover:opacity-80 transition">
-          🎫 Lamancha Tickets
-        </Link>
+    <nav className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
+            La Mancha
+          </Link>
 
-        {/* Navigation links */}
-        <div className="flex items-center gap-6">
-          {canAccessAdmin && (
-            <nav className="flex gap-4">
-              <Link
-                href="/admin/generateBlankTicket"
-                className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-medium"
-              >
-                Mis Tickets
-              </Link>
-              <Link
-                href="/admin/readQR"
-                className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-medium"
-              >
-                Leer QR
-              </Link>
-            </nav>
-          )}
+          {/* Navigation & User */}
+          <div className="flex items-center gap-4">
+            {/* Admin navigation */}
+            {canAccessAdmin && (
+              <div className="hidden sm:flex items-center gap-1">
+                <Link
+                  href="/admin/generateBlankTicket"
+                  className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
+                >
+                  Mis Tickets
+                </Link>
+                <Link
+                  href="/admin/readQR"
+                  className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
+                >
+                  Leer QR
+                </Link>
+              </div>
+            )}
 
-          {/* User section */}
-          <div className="flex flex-col items-end">
-            <p className="text-sm text-gray-300">
-              {user && <span>{user.email}</span>}
-            </p>
-            <div className="mt-1">
+            {/* User section */}
+            <div className="flex items-center gap-3">
+              {user && (
+                <span className="hidden md:block text-sm text-muted-foreground truncate max-w-[150px]">
+                  {user.email}
+                </span>
+              )}
+
               {user ? (
                 <button
-                  className="px-4 py-2 rounded-lg bg-white/10 font-semibold hover:bg-white/20 transition text-sm"
                   onClick={() => logout()}
+                  className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground border border-border hover:border-primary/50 rounded-full transition-all"
                 >
-                  Cerrar sesión
+                  Salir
                 </button>
               ) : (
                 <button
-                  className="px-4 py-2 rounded-lg bg-white/10 font-semibold hover:bg-white/20 transition text-sm"
                   onClick={() => login()}
+                  className="px-5 py-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-all"
                 >
-                  Iniciar sesión
+                  Entrar
                 </button>
               )}
             </div>
           </div>
         </div>
       </div>
-    </>
+
+      {/* Mobile admin nav */}
+      {canAccessAdmin && (
+        <div className="sm:hidden border-t border-border bg-muted/50">
+          <div className="flex">
+            <Link
+              href="/admin/generateBlankTicket"
+              className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+            >
+              Mis Tickets
+            </Link>
+            <div className="w-px bg-border" />
+            <Link
+              href="/admin/readQR"
+              className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+            >
+              Leer QR
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }

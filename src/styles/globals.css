@@ -1,66 +1,143 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    /* Warm, organic earth palette */
+    --background: 35 30% 96%;
+    --foreground: 25 20% 20%;
+    --card: 35 25% 92%;
+    --card-foreground: 25 20% 20%;
+    --popover: 35 25% 92%;
+    --popover-foreground: 25 20% 20%;
+    --primary: 18 60% 45%;
+    --primary-foreground: 35 30% 96%;
+    --secondary: 85 25% 75%;
+    --secondary-foreground: 25 20% 20%;
+    --muted: 35 20% 88%;
+    --muted-foreground: 25 15% 45%;
+    --accent: 45 70% 60%;
+    --accent-foreground: 25 20% 20%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 35 30% 96%;
+    --border: 30 20% 82%;
+    --input: 30 20% 82%;
+    --ring: 18 60% 45%;
+    --radius: 0.75rem;
+
+    /* Warm accent colors */
+    --terracotta: 18 60% 45%;
+    --sage: 85 25% 55%;
+    --cream: 40 40% 92%;
+    --earth: 25 30% 35%;
+    --golden: 42 65% 58%;
   }
+
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --background: 25 20% 12%;
+    --foreground: 35 25% 90%;
+    --card: 25 18% 16%;
+    --card-foreground: 35 25% 90%;
+    --popover: 25 18% 16%;
+    --popover-foreground: 35 25% 90%;
+    --primary: 18 55% 55%;
+    --primary-foreground: 25 20% 12%;
+    --secondary: 85 20% 30%;
+    --secondary-foreground: 35 25% 90%;
+    --muted: 25 15% 22%;
+    --muted-foreground: 35 20% 60%;
+    --accent: 45 60% 50%;
+    --accent-foreground: 25 20% 12%;
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 35 25% 90%;
+    --border: 25 15% 25%;
+    --input: 25 15% 25%;
+    --ring: 18 55% 55%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
+}
+
+@layer utilities {
+  /* Paper texture overlay */
+  .paper-texture {
+    position: relative;
+  }
+
+  .paper-texture::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+}
+
+/* Gentle animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-gentle-float {
+  animation: gentleFloat 8s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* Stagger delays */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* Organic border radius */
+.organic-shape {
+  border-radius: 60% 40% 50% 50% / 50% 50% 40% 60%;
+}
+
+/* Handdrawn underline effect */
+.handdrawn-underline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12'%3E%3Cpath d='M2 8 Q25 4 50 8 T98 6' stroke='%23c96442' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 8px;
+  padding-bottom: 8px;
 }
