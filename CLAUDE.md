@@ -48,6 +48,12 @@ npm run preview                # Build and start locally
 npm start                      # Start production server
 ```
 
+### Vercel
+```bash
+vercel ls                      # List all deployments
+vercel inspect <url> --logs    # Get build logs for a deployment
+```
+
 ## Architecture
 
 ### Tech Stack

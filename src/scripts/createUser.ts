@@ -9,7 +9,7 @@ function parseArgs() {
 
   for (const arg of args) {
     const match = arg.match(/^--([^=]+)=(.+)$/);
-    if (match) {
+    if (match && match[1] && match[2]) {
       parsed[match[1]] = match[2];
     }
   }
@@ -29,9 +29,9 @@ async function main() {
   let role: Role;
 
   if (hasAllArgs) {
-    email = args.email;
+    email = args.email!;
     name = args.name;
-    password = args.password;
+    password = args.password!;
     role = args.role as Role;
 
     if (!ROLE_CHOICES.includes(role)) {
