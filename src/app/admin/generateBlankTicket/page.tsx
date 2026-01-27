@@ -3,7 +3,7 @@ import { GenerateBlankTicket } from "~/app/_components/GenerateBlankTicket";
 import MyTicketsTable from "~/app/_components/MyTicketsTable";
 
 export default async function HomePage() {
-  void api.ticketType.getDefaultTicketType.prefetch();
+  void api.ticketType.list.prefetch();
 
   return (
     <HydrateClient>

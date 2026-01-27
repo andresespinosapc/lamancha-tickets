@@ -160,7 +160,7 @@ export const ticketRouter = createTRPCRouter({
     return new TicketService().decryptRedemptionCode(input.redemptionCode);
   }),
   list: createProtectedProcedure(['seller', 'admin']).query(async ({ ctx }) => {
-    return ctx.db.ticket.findMany({
+    const tickets = await ctx.db.ticket.findMany({
       where: {
         sellerId: ctx.session.user.id,
       },
@@ -169,6 +169,12 @@ export const ticketRouter = createTRPCRouter({
         ticketType: true,
       }
     });
+
+    // Add hashid to each ticket
+    return tickets.map(ticket => ({
+      ...ticket,
+      hashid: new HashidService().encode(ticket.id),
+    }));
   }),
   resendBlankTicketEmail: createProtectedProcedure(['seller', 'admin']).input(z.object({
     ticketHashid: z.string(),
