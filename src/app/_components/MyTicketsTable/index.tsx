@@ -11,7 +11,7 @@ import {
 import { cn } from "~/lib/utils";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { api } from "~/trpc/react";
-import { ResendBlankTicketEmailButton } from "./ResendBlankTicketEmailButton";
+import { ResendTicketEmailButton } from "./ResendTicketEmailButton";
 
 export function StatusLabel({ status }: { status: string }) {
   const getColor = (status: string) => {
@@ -65,9 +65,32 @@ export default function MyTicketsTable() {
     return ticket.redemptionCode ? 'qr_generated' : 'payed';
   };
 
+  const formatDateTime = (date: Date) => {
+    const d = new Date(date);
+    const datePart = d.toLocaleDateString('es-CL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const timePart = d.toLocaleTimeString('es-CL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return `${datePart} ${timePart}`;
+  };
+
+  const totalAmount = tickets.reduce((sum, ticket) => sum + ticket.ticketType.price, 0);
+
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-4">Mis Tickets</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Mis Tickets</h2>
+        {tickets.length > 0 && (
+          <span className="text-lg font-semibold">
+            Total: ${totalAmount.toLocaleString('es-CL')}
+          </span>
+        )}
+      </div>
 
       {tickets.length === 0 ? (
         <p className="text-gray-500 text-center py-8">No has vendido tickets aún</p>
@@ -78,6 +101,7 @@ export default function MyTicketsTable() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Fecha</TableHead>
                   <TableHead>Nombre completo</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Teléfono</TableHead>
@@ -91,6 +115,7 @@ export default function MyTicketsTable() {
               <TableBody>
                 {tickets.map((ticket) => (
                   <TableRow key={ticket.id}>
+                    <TableCell>{formatDateTime(ticket.createdAt)}</TableCell>
                     <TableCell>{getFullName(ticket.attendee)}</TableCell>
                     <TableCell>{ticket.attendee.email}</TableCell>
                     <TableCell>{ticket.attendee.phone ?? '-'}</TableCell>
@@ -100,7 +125,7 @@ export default function MyTicketsTable() {
                     <TableCell>${ticket.ticketType.price.toLocaleString('es-CL')}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <ResendBlankTicketEmailButton ticket={ticket} />
+                        <ResendTicketEmailButton ticket={ticket} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -115,6 +140,10 @@ export default function MyTicketsTable() {
               <Card key={ticket.id}>
                 <CardContent className="pt-6">
                   <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="font-semibold">Fecha:</span>
+                      <span>{formatDateTime(ticket.createdAt)}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="font-semibold">Nombre:</span>
                       <span>{getFullName(ticket.attendee)}</span>
@@ -146,7 +175,7 @@ export default function MyTicketsTable() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <ResendBlankTicketEmailButton ticket={ticket} />
+                  <ResendTicketEmailButton ticket={ticket} />
                 </CardFooter>
               </Card>
             ))}

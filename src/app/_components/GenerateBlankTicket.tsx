@@ -30,7 +30,12 @@ export type FormValues = z.infer<typeof FormSchema>;
 
 export function GenerateBlankTicket() {
   const [ticketTypes] = api.ticketType.list.useSuspenseQuery();
-  const generateBlankTickets = api.ticket.generateBlankTickets.useMutation();
+  const utils = api.useUtils();
+  const generateBlankTickets = api.ticket.generateBlankTickets.useMutation({
+    onSuccess: () => {
+      void utils.ticket.list.invalidate();
+    },
+  });
   const [submittedEmail, setSubmittedEmail] = useState<string>();
 
   const form = useForm<FormValues>({

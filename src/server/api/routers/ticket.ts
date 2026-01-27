@@ -51,6 +51,7 @@ export const ticketRouter = createTRPCRouter({
             redemptionCode: new TicketService().generateRedemptionCode({
               ticket: {
                 id: ticket.id,
+                createdAt: ticket.createdAt,
                 attendee: {
                   firstName: ticket.attendee.firstName!,
                   lastName: ticket.attendee.lastName!,
@@ -120,6 +121,10 @@ export const ticketRouter = createTRPCRouter({
         },
         data: input.attendee,
       });
+      const existingTicket = await tx.ticket.findUniqueOrThrow({
+        where: { id: ticketId },
+        select: { createdAt: true },
+      });
       const ticket = await tx.ticket.update({
         where: {
           id: ticketId,
@@ -128,6 +133,7 @@ export const ticketRouter = createTRPCRouter({
           redemptionCode: new TicketService().generateRedemptionCode({
             ticket: {
               id: ticketId,
+              createdAt: existingTicket.createdAt,
               attendee: {
                 ...input.attendee,
                 phone: input.attendee.phone ?? null,
@@ -146,7 +152,7 @@ export const ticketRouter = createTRPCRouter({
     await new EmailService().sendMail({
       to: attendee.email,
       subject: 'Tu ticket',
-      html: `Acá está tu QR para ingresar al evento </br> <img src="${qrCodeImage}">`
+      html: `<p>Acá está tu QR para ingresar al evento</p><img src="${qrCodeImage}">`
     });
   }),
   isTicketComplete: publicProcedure.input(z.object({
@@ -189,7 +195,7 @@ export const ticketRouter = createTRPCRouter({
       hashid: new HashidService().encode(ticket.id),
     }));
   }),
-  resendBlankTicketEmail: createProtectedProcedure(['seller', 'admin']).input(z.object({
+  resendTicketEmail: createProtectedProcedure(['seller', 'admin']).input(z.object({
     ticketHashid: z.string(),
   })).mutation(async ({ ctx, input }) => {
     const ticketId = new HashidService().decode(input.ticketHashid);
@@ -205,6 +211,15 @@ export const ticketRouter = createTRPCRouter({
     });
     if (ticket === null) throw new Error('Ticket not found');
 
-    await new TicketService().sendBlankTicketEmail({ ticket });
+    if (ticket.redemptionCode) {
+      const qrCodeImage = await QRCode.toDataURL(ticket.redemptionCode);
+      await new EmailService().sendMail({
+        to: ticket.attendee.email,
+        subject: 'Tu ticket',
+        html: `<p>Acá está tu QR para ingresar al evento</p><img src="${qrCodeImage}">`
+      });
+    } else {
+      await new TicketService().sendBlankTicketEmail({ ticket });
+    }
   }),
 });

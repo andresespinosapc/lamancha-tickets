@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/trpc/react";
 
-export function ResendBlankTicketEmailButton(props: {
+export function ResendTicketEmailButton(props: {
   ticket: {
     hashid: string;
     attendee: {
@@ -14,10 +14,10 @@ export function ResendBlankTicketEmailButton(props: {
 }) {
   const { toast } = useToast();
 
-  const resendBlankTicketEmail = api.ticket.resendBlankTicketEmail.useMutation();
+  const resendTicketEmail = api.ticket.resendTicketEmail.useMutation();
 
   async function handleResendEmail() {
-    await resendBlankTicketEmail.mutateAsync({ ticketHashid: props.ticket.hashid }).then(() => {
+    await resendTicketEmail.mutateAsync({ ticketHashid: props.ticket.hashid }).then(() => {
       toast({
         variant: 'success',
         title: "Correo enviado correctamente",
@@ -34,7 +34,7 @@ export function ResendBlankTicketEmailButton(props: {
 
   return (
     <Button
-      loading={resendBlankTicketEmail.isPending}
+      loading={resendTicketEmail.isPending}
       variant="outline"
       size="sm"
       onClick={() => handleResendEmail()}

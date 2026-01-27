@@ -148,6 +148,31 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
 
 ## Code Conventions
 
+### Commit Messages
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+**Format:** `<type>(<scope>): <description>`
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, semicolons, etc.)
+- `refactor`: Code refactoring without changing functionality
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks (dependencies, build config, etc.)
+
+**Scope (optional):** Area of the codebase affected (e.g., `tickets`, `auth`, `ui`)
+
+**Examples:**
+```
+feat(tickets): add date column to My Tickets table
+fix(auth): resolve token expiration issue
+refactor(api): simplify ticket validation logic
+docs: update README with setup instructions
+```
+
 ### File Naming
 - **Always use English** for file and directory names
 - **Use lowercase** for files in the `docs/` directory (e.g., `functionality.md`, `api-guide.md`)

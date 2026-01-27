@@ -95,6 +95,34 @@ export function ReadQR() {
                   </div>
                 </div>
               )}
+
+              {decryptedRedemptionCode.createdAt && (
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Fecha de creación</p>
+                    <p className="text-foreground">
+                      {(() => {
+                        const d = new Date(decryptedRedemptionCode.createdAt);
+                        const datePart = d.toLocaleDateString('es-CL', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        });
+                        const timePart = d.toLocaleTimeString('es-CL', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        });
+                        return `${datePart} ${timePart}`;
+                      })()}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Decorative ticket edge */}
