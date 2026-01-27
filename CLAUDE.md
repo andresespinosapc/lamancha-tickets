@@ -148,12 +148,14 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
 
 ## Code Conventions
 
-### User-Facing Text
-- **All user-facing text must be in Spanish.** This includes:
-  - Error messages (tRPC errors, validation messages)
+### Language Guidelines
+- **Code-level messages (English)**: Error messages thrown in services, routers, and backend code should be in English. These are primarily for developers and logging.
+- **Frontend user-facing text (Spanish)**: All text displayed to end users in the UI must be in Spanish. This includes:
   - UI labels, buttons, and placeholders
   - Toast notifications and alerts
   - Page titles and headings
+  - Form validation messages shown to users
+  - Any text rendered in React components
 
 ### Commit Messages
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification.

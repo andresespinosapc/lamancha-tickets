@@ -10,7 +10,7 @@ export const syncRouter = createTRPCRouter({
     if (!isLocalMode()) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "La sincronización solo está disponible en el servidor local",
+        message: "Sync is only available on local server",
       });
     }
     return syncService.syncValidationsToGlobal();
@@ -20,7 +20,7 @@ export const syncRouter = createTRPCRouter({
     if (!isLocalMode()) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "El estado de sincronización solo está disponible en el servidor local",
+        message: "Sync status is only available on local server",
       });
     }
     return syncService.getSyncStatus();

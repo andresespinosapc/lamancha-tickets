@@ -19,7 +19,7 @@ export const validationRouter = createTRPCRouter({
       if (!isLocalMode()) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "La validación solo está disponible en el servidor local",
+          message: "Validation is only available on local server",
         });
       }
 

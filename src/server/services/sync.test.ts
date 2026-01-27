@@ -53,7 +53,7 @@ describe("SyncService", () => {
       vi.mocked(isLocalMode).mockReturnValue(false);
 
       await expect(service.syncValidationsToGlobal()).rejects.toThrow(
-        "La sincronización solo está disponible en modo local"
+        "Sync is only available in local mode"
       );
     });
 
@@ -157,7 +157,7 @@ describe("SyncService", () => {
       } as Response);
 
       await expect(service.syncValidationsToGlobal()).rejects.toThrow(
-        "Error de sincronización: Internal Server Error"
+        "Sync error: Internal Server Error"
       );
     });
   });
