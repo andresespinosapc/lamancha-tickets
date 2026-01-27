@@ -11,6 +11,7 @@ import {
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -21,9 +22,6 @@ import {
 import { cn } from "~/lib/utils";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { api, type RouterOutputs } from "~/trpc/react";
-import { useToast } from "~/hooks/use-toast";
-import { Ticket } from "@prisma/client";
-import { useEffect } from "react";
 import { ResendBlankTicketEmailButton } from "./ResendBlankTicketEmailButton";
 
 export function StatusLabel({ status }: { status: string }) {
@@ -137,13 +135,7 @@ export default function MyTicketsTable() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleResendEmail(ticket.attendee.email)}
-              >
-                Re-enviar correo
-              </Button>
+              <ResendBlankTicketEmailButton ticket={ticket} />
               {/* <RevokeDialog ticket={ticket} onRevoke={handleAnularTicket} /> */}
             </CardFooter>
           </Card>
@@ -178,7 +170,9 @@ function RevokeDialog({ ticket, onRevoke }: RevokeDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => {}}>Cancelar</Button>
+          <DialogClose asChild>
+            <Button variant="outline">Cancelar</Button>
+          </DialogClose>
           <Button variant="destructive" onClick={() => onRevoke(ticket.id)}>
             Sí, anular ticket
           </Button>
