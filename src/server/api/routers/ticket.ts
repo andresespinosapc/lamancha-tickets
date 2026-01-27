@@ -41,12 +41,25 @@ export const ticketRouter = createTRPCRouter({
             attendee: true,
           }
         });
+
+        // Generate redemption code using the created ticket data
         await tx.ticket.update({
           where: {
             id: ticket.id,
           },
           data: {
-            redemptionCode: new TicketService().generateRedemptionCode({ ticket }),
+            redemptionCode: new TicketService().generateRedemptionCode({
+              ticket: {
+                id: ticket.id,
+                attendee: {
+                  firstName: ticket.attendee.firstName!,
+                  lastName: ticket.attendee.lastName!,
+                  email: ticket.attendee.email,
+                  documentId: ticket.attendee.documentId!,
+                  phone: ticket.attendee.phone,
+                }
+              }
+            }),
           }
         });
       }));

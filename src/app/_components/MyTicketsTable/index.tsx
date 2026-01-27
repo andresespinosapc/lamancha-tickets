@@ -8,22 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Button } from "~/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
 import { cn } from "~/lib/utils";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
-import { api, type RouterOutputs } from "~/trpc/react";
-import { useToast } from "~/hooks/use-toast";
-import { Ticket } from "@prisma/client";
-import { useEffect } from "react";
+import { api } from "~/trpc/react";
 import { ResendBlankTicketEmailButton } from "./ResendBlankTicketEmailButton";
 
 export function StatusLabel({ status }: { status: string }) {
@@ -170,38 +157,6 @@ export default function MyTicketsTable() {
   );
 }
 
-type RevokeDialogProps = {
-  ticket: RouterOutputs['ticket']['list'][number],
-  onRevoke: (id: number) => void
-}
-
-function RevokeDialog({ ticket, onRevoke }: RevokeDialogProps) {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="destructive"
-          size="sm"
-          disabled={ticket.status === 'revoked'}
-        >
-          Anular
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>¿Estás seguro?</DialogTitle>
-          <DialogDescription>
-            Esta acción anulará el ticket de {ticket.attendee.fullName}. No se puede deshacer.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => {}}>Cancelar</Button>
-          <Button variant="destructive" onClick={() => onRevoke(ticket.id)}>
-            Sí, anular ticket
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
+// TODO: RevokeDialog functionality has been temporarily disabled
+// Will be re-enabled when ticket revocation feature is implemented
 
