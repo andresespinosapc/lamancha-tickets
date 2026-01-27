@@ -158,6 +158,8 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
   - Any text rendered in React components
 
 ### Commit Messages
+**IMPORTANT: All commits MUST follow Conventional Commits. Check this before every commit.**
+
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 **Format:** `<type>(<scope>): <description>`
@@ -181,6 +183,11 @@ fix(auth): resolve token expiration issue
 refactor(api): simplify ticket validation logic
 docs: update README with setup instructions
 ```
+
+**Pre-commit checklist:**
+- [ ] Does the commit message start with a valid type (`feat`, `fix`, `docs`, etc.)?
+- [ ] Is the message in English and lowercase (except for proper nouns)?
+- [ ] Is it descriptive but concise (ideally under 72 characters)?
 
 ### File Naming
 - **Always use English** for file and directory names
