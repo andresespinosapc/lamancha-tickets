@@ -8,6 +8,7 @@ import {
 } from "~/server/api/trpc";
 import { EmailService } from "~/server/services/email";
 import { TicketService } from "~/server/services/ticket";
+import { ticketQREmailTemplate } from "~/server/services/email-templates";
 import { env } from "~/env";
 import { HashidService } from "~/server/services/hashid";
 
@@ -149,10 +150,15 @@ export const ticketRouter = createTRPCRouter({
     if (ticket.redemptionCode === null) throw new Error('Failed to generate redemption code');
 
     const qrCodeImage = await QRCode.toDataURL(ticket.redemptionCode);
+    const { html, text } = ticketQREmailTemplate({
+      qrCodeDataUrl: qrCodeImage,
+      attendeeName: input.attendee.firstName,
+    });
     await new EmailService().sendMail({
       to: attendee.email,
-      subject: 'Tu ticket',
-      html: `<p>Acá está tu QR para ingresar al evento</p><img src="${qrCodeImage}">`
+      subject: `🎉 Tu entrada para ${env.EVENT_NAME} está lista`,
+      html,
+      text,
     });
   }),
   isTicketComplete: publicProcedure.input(z.object({
@@ -213,10 +219,15 @@ export const ticketRouter = createTRPCRouter({
 
     if (ticket.redemptionCode) {
       const qrCodeImage = await QRCode.toDataURL(ticket.redemptionCode);
+      const { html, text } = ticketQREmailTemplate({
+        qrCodeDataUrl: qrCodeImage,
+        attendeeName: ticket.attendee.firstName ?? 'Asistente',
+      });
       await new EmailService().sendMail({
         to: ticket.attendee.email,
-        subject: 'Tu ticket',
-        html: `<p>Acá está tu QR para ingresar al evento</p><img src="${qrCodeImage}">`
+        subject: `🎉 Tu entrada para ${env.EVENT_NAME} está lista`,
+        html,
+        text,
       });
     } else {
       await new TicketService().sendBlankTicketEmail({ ticket });
