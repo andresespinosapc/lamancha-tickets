@@ -3,6 +3,8 @@ import { ticketTypeRouter } from "~/server/api/routers/ticketType";
 import { ticketRouter } from "./routers/ticket";
 import { authRouter } from "./routers/auth";
 import { userRouter } from "./routers/user";
+import { validationRouter } from "./routers/validation";
+import { syncRouter } from "./routers/sync";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +16,8 @@ export const appRouter = createTRPCRouter({
   ticketType: ticketTypeRouter,
   ticket: ticketRouter,
   user: userRouter,
+  validation: validationRouter,
+  sync: syncRouter,
 });
 
 // export type definition of API

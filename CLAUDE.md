@@ -148,7 +148,18 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
 
 ## Code Conventions
 
+### Language Guidelines
+- **Code-level messages (English)**: Error messages thrown in services, routers, and backend code should be in English. These are primarily for developers and logging.
+- **Frontend user-facing text (Spanish)**: All text displayed to end users in the UI must be in Spanish. This includes:
+  - UI labels, buttons, and placeholders
+  - Toast notifications and alerts
+  - Page titles and headings
+  - Form validation messages shown to users
+  - Any text rendered in React components
+
 ### Commit Messages
+**IMPORTANT: All commits MUST follow Conventional Commits. Check this before every commit.**
+
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 **Format:** `<type>(<scope>): <description>`
@@ -172,6 +183,11 @@ fix(auth): resolve token expiration issue
 refactor(api): simplify ticket validation logic
 docs: update README with setup instructions
 ```
+
+**Pre-commit checklist:**
+- [ ] Does the commit message start with a valid type (`feat`, `fix`, `docs`, etc.)?
+- [ ] Is the message in English and lowercase (except for proper nouns)?
+- [ ] Is it descriptive but concise (ideally under 72 characters)?
 
 ### File Naming
 - **Always use English** for file and directory names

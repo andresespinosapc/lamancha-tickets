@@ -17,7 +17,7 @@ async function main() {
 
   // Create users
   console.log('👥 Creating users...');
-  const hashedPassword = await hash('test123', 10);
+  const hashedPassword = await hash('testpassword', 10);
 
   const adminUser = await db.user.create({
     data: {
@@ -25,6 +25,34 @@ async function main() {
       name: 'Admin User',
       password: hashedPassword,
       role: 'admin',
+    }
+  });
+
+  // Guard user for E2E tests
+  await db.user.create({
+    data: {
+      email: 'guard@test.com',
+      name: 'Guard User',
+      password: hashedPassword,
+      role: 'guard',
+    }
+  });
+
+  // Generic seller for E2E tests
+  await db.user.create({
+    data: {
+      email: 'seller@test.com',
+      name: 'Test Seller',
+      password: hashedPassword,
+      role: 'seller',
+      sellerInfo: {
+        create: {
+          instagram: '@testseller',
+          phone: '+56900000000',
+          email: 'seller@test.com',
+          preferredContactMethod: 'instagram',
+        }
+      }
     }
   });
 
@@ -71,7 +99,7 @@ async function main() {
     }
   });
 
-  console.log(`✅ Created ${4} users\n`);
+  console.log(`✅ Created ${6} users\n`);
 
   // Create ticket types
   console.log('🎫 Creating ticket types...');
@@ -222,10 +250,12 @@ async function main() {
   console.log(`  👤 Attendees: ${attendeeCount}`);
   console.log(`  🎟️  Tickets: ${ticketCount}`);
   console.log('\n📝 Test credentials:');
-  console.log('  Admin:   admin@test.com / test123');
-  console.log('  Seller1: seller1@test.com / test123');
-  console.log('  Seller2: seller2@test.com / test123');
-  console.log('  User:    user@test.com / test123');
+  console.log('  Admin:   admin@test.com / testpassword');
+  console.log('  Guard:   guard@test.com / testpassword');
+  console.log('  Seller:  seller@test.com / testpassword');
+  console.log('  Seller1: seller1@test.com / testpassword');
+  console.log('  Seller2: seller2@test.com / testpassword');
+  console.log('  User:    user@test.com / testpassword');
 }
 
 main()
