@@ -2,6 +2,8 @@ import { api, HydrateClient } from "~/trpc/server";
 import { GenerateBlankTicket } from "~/app/_components/GenerateBlankTicket";
 import MyTicketsTable from "~/app/_components/MyTicketsTable";
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   void api.ticketType.getDefaultTicketType.prefetch();
 
