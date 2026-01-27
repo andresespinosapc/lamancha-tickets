@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/components/ui/toaster";
+import { VibeKanbanWebCompanionWrapper } from "~/components/VibeKanbanWebCompanionWrapper";
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster />
+        <VibeKanbanWebCompanionWrapper />
       </body>
     </html>
   );

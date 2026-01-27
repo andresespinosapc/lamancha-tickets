@@ -59,6 +59,7 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "universal-cookie": "^7.2.2",
+    "vibe-kanban-web-companion": "^0.0.5",
     "zod": "^3.23.8",
     "zod_utilz": "^0.8.3"
   },
