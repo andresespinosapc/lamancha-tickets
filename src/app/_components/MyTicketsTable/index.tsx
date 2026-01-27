@@ -93,8 +93,8 @@ export default function MyTicketsTable() {
                   <TableRow key={ticket.id}>
                     <TableCell>{getFullName(ticket.attendee)}</TableCell>
                     <TableCell>{ticket.attendee.email}</TableCell>
-                    <TableCell>{ticket.attendee.phone || '-'}</TableCell>
-                    <TableCell>{ticket.attendee.documentId || '-'}</TableCell>
+                    <TableCell>{ticket.attendee.phone ?? '-'}</TableCell>
+                    <TableCell>{ticket.attendee.documentId ?? '-'}</TableCell>
                     <TableCell><StatusLabel status={getStatus(ticket)} /></TableCell>
                     <TableCell>{ticket.ticketType.name}</TableCell>
                     <TableCell>${ticket.ticketType.price.toLocaleString('es-CL')}</TableCell>
@@ -125,11 +125,11 @@ export default function MyTicketsTable() {
                     </div>
                     <div className="flex justify-between">
                       <span className="font-semibold">Teléfono:</span>
-                      <span>{ticket.attendee.phone || '-'}</span>
+                      <span>{ticket.attendee.phone ?? '-'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-semibold">RUT:</span>
-                      <span>{ticket.attendee.documentId || '-'}</span>
+                      <span>{ticket.attendee.documentId ?? '-'}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="font-semibold">Estado:</span>

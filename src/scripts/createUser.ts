@@ -7,9 +7,10 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const parsed: Record<string, string> = {};
 
+  const regex = /^--([^=]+)=(.+)$/;
   for (const arg of args) {
-    const match = arg.match(/^--([^=]+)=(.+)$/);
-    if (match && match[1] && match[2]) {
+    const match = regex.exec(arg);
+    if (match?.[1] && match[2]) {
       parsed[match[1]] = match[2];
     }
   }
@@ -56,11 +57,12 @@ async function main() {
 
   console.log('✅ User created successfully!');
   console.log(`   Email: ${email}`);
-  console.log(`   Name: ${name || 'N/A'}`);
+  console.log(`   Name: ${name ?? 'N/A'}`);
   console.log(`   Role: ${role}`);
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error.message);
+main().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error('❌ Error:', message);
   process.exit(1);
 });
