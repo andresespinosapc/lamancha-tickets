@@ -5,16 +5,19 @@ test.describe("Synchronization E2E Flow", () => {
     test.beforeEach(async ({ page }) => {
       // Login as admin
       await page.goto("/login");
-      await page.fill('input[name="email"]', "admin@test.com");
-      await page.fill('input[name="password"]', "testpassword");
+      await page.fill('input[id="email"]', "admin@test.com");
+      await page.fill('input[id="password"]', "testpassword");
       await page.click('button[type="submit"]');
-      await page.waitForURL("/admin/**");
+      await page.waitForURL("/");
     });
 
     test("sync status shows correct pending count", async ({ page }) => {
       // This test should run with SERVER_MODE=local
       // Skip if not in local mode
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       // Look for sync status indicator
       const syncStatus = page.locator("[data-testid='sync-status']");
@@ -26,6 +29,9 @@ test.describe("Synchronization E2E Flow", () => {
 
     test("admin can trigger manual sync", async ({ page }) => {
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       // Look for sync button
       const syncButton = page.locator("button", { hasText: /sincronizar|sync/i });
@@ -42,6 +48,9 @@ test.describe("Synchronization E2E Flow", () => {
 
     test("sync status updates after successful sync", async ({ page }) => {
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       const syncStatus = page.locator("[data-testid='sync-status']");
       const syncButton = page.locator("button", { hasText: /sincronizar|sync/i });
@@ -65,6 +74,9 @@ test.describe("Synchronization E2E Flow", () => {
     test("last sync timestamp is displayed", async ({ page }) => {
       await page.goto("/admin/validations");
 
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
+
       // Should show when the last sync occurred
       const lastSyncInfo = page.locator("[data-testid='last-sync']");
       if (await lastSyncInfo.isVisible()) {
@@ -78,14 +90,17 @@ test.describe("Synchronization E2E Flow", () => {
   test.describe("Sync error handling", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/login");
-      await page.fill('input[name="email"]', "admin@test.com");
-      await page.fill('input[name="password"]', "testpassword");
+      await page.fill('input[id="email"]', "admin@test.com");
+      await page.fill('input[id="password"]', "testpassword");
       await page.click('button[type="submit"]');
-      await page.waitForURL("/admin/**");
+      await page.waitForURL("/");
     });
 
     test("shows error message when sync fails", async ({ page }) => {
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       // If global server is unreachable, sync should fail gracefully
       const syncButton = page.locator("button", { hasText: /sincronizar|sync/i });
@@ -106,6 +121,9 @@ test.describe("Synchronization E2E Flow", () => {
 
     test("retains validations after failed sync", async ({ page }) => {
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       // Get count of validations before sync attempt
       const countBefore = await page.locator("table tbody tr").count();
@@ -130,11 +148,15 @@ test.describe("Synchronization E2E Flow", () => {
       // the sync process doesn't create a duplicate
 
       await page.goto("/login");
-      await page.fill('input[name="email"]', "admin@test.com");
-      await page.fill('input[name="password"]', "testpassword");
+      await page.fill('input[id="email"]', "admin@test.com");
+      await page.fill('input[id="password"]', "testpassword");
       await page.click('button[type="submit"]');
+      await page.waitForURL("/");
 
       await page.goto("/admin/validations");
+
+      // Should not redirect to login
+      await expect(page).not.toHaveURL(/.*login.*/);
 
       // Count validations
       const countBefore = await page.locator("table tbody tr").count();
