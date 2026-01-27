@@ -18,37 +18,50 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '~/com
 import { api } from '~/trpc/react';
 import { useState } from 'react';
 
-const EmailFormSchema = z.object({
+const FormSchema = z.object({
   email: z.string().email({
     message: 'Por favor, ingresa una dirección de correo electrónico válida.',
   }),
+  ticketTypeId: z.string().min(1, {
+    message: 'Por favor, selecciona un tipo de ticket.',
+  }),
 });
-export type EmailFormValues = z.infer<typeof EmailFormSchema>;
+export type FormValues = z.infer<typeof FormSchema>;
 
 export function GenerateBlankTicket() {
-  const [defaultTicketType] = api.ticketType.getDefaultTicketType.useSuspenseQuery();
+  const [ticketTypes] = api.ticketType.list.useSuspenseQuery();
   const generateBlankTickets = api.ticket.generateBlankTickets.useMutation();
   const [submittedEmail, setSubmittedEmail] = useState<string>();
 
-  const form = useForm<EmailFormValues>({
-    resolver: zodResolver(EmailFormSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       email: '',
+      ticketTypeId: ticketTypes[0]?.id.toString() ?? '',
     },
   });
 
-  function onSubmit(values: EmailFormValues) {
-    if (defaultTicketType === null) throw new Error('Default ticket type is null');
-
+  function onSubmit(values: FormValues) {
     generateBlankTickets.mutate({
       tickets: [{
-        ticketTypeId: defaultTicketType.id,
+        ticketTypeId: parseInt(values.ticketTypeId),
         attendee: {
           email: values.email,
         },
       }]
     });
     setSubmittedEmail(values.email);
+  }
+
+  if (ticketTypes.length === 0) {
+    return (
+      <Card className="w-full max-w-md mx-auto mt-6">
+        <CardHeader>
+          <CardTitle>No hay tipos de tickets</CardTitle>
+          <CardDescription>Por favor, crea al menos un tipo de ticket primero.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
 
   return (
@@ -68,6 +81,32 @@ export function GenerateBlankTicket() {
                   <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <Input type="email" placeholder="john.doe@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage>
+                    {form.formState.errors[field.name]?.message && (
+                      <span role="alert">{form.formState.errors[field.name]?.message}</span>
+                    )}
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ticketTypeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de ticket</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      {ticketTypes.map((ticketType) => (
+                        <option key={ticketType.id} value={ticketType.id}>
+                          {ticketType.name} - ${ticketType.price.toLocaleString()}
+                        </option>
+                      ))}
+                    </select>
                   </FormControl>
                   <FormMessage>
                     {form.formState.errors[field.name]?.message && (

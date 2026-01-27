@@ -5,7 +5,7 @@ import MyTicketsTable from "~/app/_components/MyTicketsTable";
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  void api.ticketType.getDefaultTicketType.prefetch();
+  void api.ticketType.list.prefetch();
 
   return (
     <HydrateClient>
