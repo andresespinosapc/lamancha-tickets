@@ -7,8 +7,8 @@ export default async function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await api.user.me();
 
-  // Protect admin routes - only sellers and admins
-  if (!user || (user.role !== 'seller' && user.role !== 'admin')) {
+  // Protect admin routes - sellers, admins, and guards
+  if (!user || !['seller', 'admin', 'guard'].includes(user.role ?? '')) {
     redirect('/login');
   }
 

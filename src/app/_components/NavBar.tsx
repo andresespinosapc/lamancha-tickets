@@ -17,6 +17,8 @@ export default function NavBar() {
   }
 
   const canAccessAdmin = user?.role === 'admin' || user?.role === 'seller';
+  const canValidate = user?.role === 'admin' || user?.role === 'guard';
+  const isAdmin = user?.role === 'admin';
 
   return (
     <nav className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -30,20 +32,32 @@ export default function NavBar() {
           {/* Navigation & User */}
           <div className="flex items-center gap-4">
             {/* Admin navigation */}
-            {canAccessAdmin && (
+            {(canAccessAdmin || canValidate) && (
               <div className="hidden sm:flex items-center gap-1">
-                <Link
-                  href="/admin/generateBlankTicket"
-                  className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
-                >
-                  Mis Tickets
-                </Link>
-                <Link
-                  href="/admin/readQR"
-                  className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
-                >
-                  Leer QR
-                </Link>
+                {canAccessAdmin && (
+                  <Link
+                    href="/admin/generateBlankTicket"
+                    className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
+                  >
+                    Mis Tickets
+                  </Link>
+                )}
+                {canValidate && (
+                  <Link
+                    href="/admin/readQR"
+                    className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
+                  >
+                    Validar Tickets
+                  </Link>
+                )}
+                {isAdmin && (
+                  <Link
+                    href="/admin/validations"
+                    className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-all"
+                  >
+                    Registros
+                  </Link>
+                )}
               </div>
             )}
 
@@ -76,22 +90,37 @@ export default function NavBar() {
       </div>
 
       {/* Mobile admin nav */}
-      {canAccessAdmin && (
+      {(canAccessAdmin || canValidate) && (
         <div className="sm:hidden border-t border-border bg-muted/50">
           <div className="flex">
-            <Link
-              href="/admin/generateBlankTicket"
-              className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-            >
-              Mis Tickets
-            </Link>
-            <div className="w-px bg-border" />
-            <Link
-              href="/admin/readQR"
-              className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-            >
-              Leer QR
-            </Link>
+            {canAccessAdmin && (
+              <Link
+                href="/admin/generateBlankTicket"
+                className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+              >
+                Mis Tickets
+              </Link>
+            )}
+            {canAccessAdmin && canValidate && <div className="w-px bg-border" />}
+            {canValidate && (
+              <Link
+                href="/admin/readQR"
+                className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+              >
+                Validar Tickets
+              </Link>
+            )}
+            {isAdmin && (
+              <>
+                <div className="w-px bg-border" />
+                <Link
+                  href="/admin/validations"
+                  className="flex-1 px-4 py-3 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                >
+                  Registros
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

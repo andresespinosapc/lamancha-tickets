@@ -21,7 +21,10 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "create_user": "tsx src/scripts/createUser.ts"
+    "create_user": "tsx src/scripts/createUser.ts",
+    "dev:local": "./start-local-server.sh",
+    "db:push:local": "DATABASE_URL=postgresql://postgres:password@localhost:5433/lamancha-tickets-local prisma db push",
+    "db:studio:local": "DATABASE_URL=postgresql://postgres:password@localhost:5433/lamancha-tickets-local prisma studio"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",

@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { hash } from 'bcrypt';
 
-export const ROLE_CHOICES = ['user', 'seller', 'admin'] as const;
+export const ROLE_CHOICES = ['user', 'seller', 'admin', 'guard'] as const;
 export type Role = typeof ROLE_CHOICES[number];
 
 export class UserService {
