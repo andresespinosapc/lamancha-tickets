@@ -140,6 +140,13 @@ All environment variables are validated via `src/env.js` using Zod schemas. Requ
 - `EVENT_NAME`: Name of the event
 - `MAX_TICKETS_PER_SELLER`: Ticket limit per seller
 
+## Code Conventions
+
+### File Naming
+- **Always use English** for file and directory names
+- **Use lowercase** for files in the `docs/` directory (e.g., `functionality.md`, `api-guide.md`)
+- Follow existing patterns in other directories (camelCase for components, kebab-case for utilities)
+
 ## Important Notes
 
 - The database runs in Docker using `./start-database.sh`
