@@ -6,6 +6,7 @@ import { EmailService } from "./email";
 
 const DecryptedRedemptionCodeSchema = z.object({
   ticketId: z.number(),
+  createdAt: z.string().optional(),
   attendee: z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -20,6 +21,7 @@ export class TicketService {
   generateRedemptionCode(options: {
     ticket: {
       id: number;
+      createdAt: Date;
       attendee: {
         firstName: string;
         lastName: string;
@@ -31,6 +33,7 @@ export class TicketService {
   }) {
     const dataToEncrypt = JSON.stringify({
       ticketId: options.ticket.id,
+      createdAt: options.ticket.createdAt.toISOString(),
       attendee: {
         firstName: options.ticket.attendee.firstName,
         lastName: options.ticket.attendee.lastName,

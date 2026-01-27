@@ -82,7 +82,7 @@ export function CompleteBlankTicket(props: {
     });
   }
 
-  if (isTicketComplete) {
+  if (isTicketComplete || completeBlankTicket.isSuccess) {
     return (
       <Card className="w-full max-w-md mx-auto mt-6">
         <CardHeader>
