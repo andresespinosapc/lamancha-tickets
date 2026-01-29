@@ -4,6 +4,7 @@ import { createProtectedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { TicketService } from "~/server/services/ticket";
 import { ValidationService } from "~/server/services/validation";
 import { isLocalMode } from "~/server/services/serverMode";
+import { env } from "~/env";
 
 const validationService = new ValidationService();
 const ticketService = new TicketService();
@@ -16,7 +17,7 @@ export const validationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!isLocalMode()) {
+      if (!isLocalMode() && !env.ALLOW_GLOBAL_SERVER_VALIDATION) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Validation is only available on local server",

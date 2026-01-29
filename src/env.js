@@ -8,6 +8,7 @@ export const env = createEnv({
   },
   emptyStringAsUndefined: true,
   runtimeEnv: {
+    ALLOW_GLOBAL_SERVER_VALIDATION: process.env.ALLOW_GLOBAL_SERVER_VALIDATION,
     AUTH_SECRET: process.env.AUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     EVENT_NAME: process.env.EVENT_NAME,
@@ -27,6 +28,10 @@ export const env = createEnv({
     SMTP_USER: process.env.SMTP_USER,
   },
   server: {
+    ALLOW_GLOBAL_SERVER_VALIDATION: z
+      .string()
+      .default("false")
+      .transform((val) => val === "true"),
     AUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string()
