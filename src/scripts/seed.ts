@@ -17,7 +17,7 @@ async function main() {
 
   // Create users
   console.log('👥 Creating users...');
-  const hashedPassword = await hash('testpassword', 10);
+  const hashedPassword = await hash('asdfasdf', 10);
 
   const adminUser = await db.user.create({
     data: {
@@ -250,12 +250,12 @@ async function main() {
   console.log(`  👤 Attendees: ${attendeeCount}`);
   console.log(`  🎟️  Tickets: ${ticketCount}`);
   console.log('\n📝 Test credentials:');
-  console.log('  Admin:   admin@test.com / testpassword');
-  console.log('  Guard:   guard@test.com / testpassword');
-  console.log('  Seller:  seller@test.com / testpassword');
-  console.log('  Seller1: seller1@test.com / testpassword');
-  console.log('  Seller2: seller2@test.com / testpassword');
-  console.log('  User:    user@test.com / testpassword');
+  console.log('  Admin:   admin@test.com / asdfasdf');
+  console.log('  Guard:   guard@test.com / asdfasdf');
+  console.log('  Seller:  seller@test.com / asdfasdf');
+  console.log('  Seller1: seller1@test.com / asdfasdf');
+  console.log('  Seller2: seller2@test.com / asdfasdf');
+  console.log('  User:    user@test.com / asdfasdf');
 }
 
 main()
