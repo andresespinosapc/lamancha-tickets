@@ -58,7 +58,7 @@ export default function MyTicketsTable() {
     if (attendee.firstName && attendee.lastName) {
       return `${attendee.firstName} ${attendee.lastName}`;
     }
-    return 'Pendiente';
+    return '-';
   };
 
   const getStatus = (ticket: typeof tickets[number]) => {
