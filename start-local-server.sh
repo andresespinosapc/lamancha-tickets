@@ -39,4 +39,4 @@ echo "LOCAL_SERVER_ID: $LOCAL_SERVER_ID"
 echo "DATABASE_URL: $DATABASE_URL"
 echo ""
 
-npm run dev
+pnpm dev

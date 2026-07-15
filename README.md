@@ -113,10 +113,10 @@ src/
 ## Running Locally
 
 ```bash
-npm install
+pnpm install
 ./start-database.sh         # Start PostgreSQL in Docker
-npm run db:push             # Push schema to database
-npm run dev                 # Start development server
+pnpm run db:push             # Push schema to database
+pnpm run dev                 # Start development server
 ```
 
 ## License

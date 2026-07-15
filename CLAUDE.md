@@ -10,41 +10,41 @@ This is a T3 Stack ticket management system for events, built with Next.js 15, t
 
 ### Setup
 ```bash
-npm install                    # Install dependencies
+pnpm install                    # Install dependencies
 ./start-database.sh            # Start PostgreSQL in Docker
-npm run db:push                # Push schema to database
-npm run db:generate            # Generate Prisma migrations
+pnpm run db:push                # Push schema to database
+pnpm run db:generate            # Generate Prisma migrations
 ```
 
 ### Development
 ```bash
-npm run dev                    # Start dev server with Turbo
-npm run db:studio              # Open Prisma Studio
-npm run create_user            # Run user creation script
+pnpm run dev                    # Start dev server with Turbo
+pnpm run db:studio              # Open Prisma Studio
+pnpm run create_user            # Run user creation script
 ```
 
 ### Code Quality
 ```bash
-npm run check                  # Run linter and type check
-npm run lint                   # Run ESLint
-npm run lint:fix               # Auto-fix lint issues
-npm run typecheck              # Run TypeScript compiler check
-npm run format:check           # Check code formatting
-npm run format:write           # Auto-format code
+pnpm run check                  # Run linter and type check
+pnpm run lint                   # Run ESLint
+pnpm run lint:fix               # Auto-fix lint issues
+pnpm run typecheck              # Run TypeScript compiler check
+pnpm run format:check           # Check code formatting
+pnpm run format:write           # Auto-format code
 ```
 
 ### Database
 ```bash
-npm run db:push                # Push schema changes to DB
-npm run db:migrate             # Deploy migrations
-npm run db:format              # Format Prisma schema
-npm run db:studio              # Open Prisma Studio GUI
+pnpm run db:push                # Push schema changes to DB
+pnpm run db:migrate             # Deploy migrations
+pnpm run db:format              # Format Prisma schema
+pnpm run db:studio              # Open Prisma Studio GUI
 ```
 
 ### Build & Deploy
 ```bash
-npm run build                  # Build for production
-npm run preview                # Build and start locally
+pnpm run build                  # Build for production
+pnpm run preview                # Build and start locally
 npm start                      # Start production server
 ```
 
@@ -197,8 +197,8 @@ docs: update README with setup instructions
 ## Important Notes
 
 - The database runs in Docker using `./start-database.sh`
-- Prisma generates types on `postinstall`, so run `npm install` after schema changes
-- Use `npm run create_user` script to manually create users with specific roles
+- Prisma generates types on `postinstall`, so run `pnpm install` after schema changes
+- Use `pnpm run create_user` script to manually create users with specific roles
 - All tRPC procedures include a timing middleware that logs execution time
 - Development mode adds artificial 100-400ms delays to catch waterfalls
 - Seller API keys (Flow, MercadoPago) are stored encrypted in the database
